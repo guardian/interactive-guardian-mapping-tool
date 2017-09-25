@@ -1,0 +1,12 @@
+.gv-card-item{
+	position:relative;
+	display:block;
+	background-color:#CCC;
+	width: 100%;
+	
+
+	@include mq(tablet){
+		display:inline-block;
+		width: calc(100% / 3)
+	}
+}
