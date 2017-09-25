@@ -219,6 +219,19 @@ body {
          }
      }
 
+    &.cyan{
+		background-color:#4bc6df;
+	}
+
+	&.magenta{
+		background-color:#dc2a7d;
+	}
+
+	&.yellow{
+		background-color:#ffbb00;
+		color:#222;
+	}
+
      p {
           margin: 0;
           @include fs-headline(2);

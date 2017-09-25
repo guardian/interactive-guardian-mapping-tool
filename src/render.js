@@ -55,24 +55,21 @@ export async function render() {
 
 function formatData(data) {
     var newObj = {};
-
-    // dataIn.map((obj) => {
-    //     if (!obj.floor) { obj.floor = "unknown"; }
-    //     if (!obj.age) { obj.age = "unknown"; }
-    //     if (!obj.status) { obj.status = "unknown"; }
-
-    //     obj.formatName = obj.name.split(",")[0];
-    //     obj.sortName = obj.family_name + obj.formatName;
-    // })
+    let count = 0;
+    data.sheets.Sheet1.map((obj,k) => {
+    	obj.ref = k;
+    })
 
     let groups = groupBy(data.sheets.Sheet1, 'card-group');
 
     groups = sortByKeys(groups);
 
-    groups.map((obj) => {
-        console.log(obj)
+    groups.map((obj, k) => {
+    	obj.groupRef = k;
+        obj.objArr.map((ob) => {
+        	ob.groupRef = obj.groupRef;
+        })	
 
-        // obj.count = obj.objArr.length;
     });
 
     newObj.groups = groups;
@@ -83,9 +80,6 @@ function formatData(data) {
 
 
 function compileHTML(dataIn) {
-
-	console.log(dataIn)
-
     Handlebars.registerHelper('html_decoder', function(text) {
         var str = unescape(text).replace(/&amp;/g, '&');
         return str;

@@ -6,13 +6,13 @@
         <div class='interactive-nav__inner'>
             Jump to
             {{#groups}}
-                <a href="#{{sortOn}}" data-jump-to='{{sortOn}}'>{{sortOn}}</a>
+                <a href="#group-{{groupRef}}" data-jump-to='{{groupRef}}'>{{sortOn}}</a>
             {{/groups}}
         </div>
     </div>
 
     {{#groups}}
-    <div class='policy-group' id="{{group}}" data-scroll>
+    <div class='policy-group' id="group-{{groupRef}}" data-scroll>
         <div class="policy-group__header">
             <div class='policy-group__header__text'>
                 <h2 class='policy-group__header__text__title'>{{sortOn}}</h2>
