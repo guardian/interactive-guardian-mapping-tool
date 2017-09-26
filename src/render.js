@@ -16,38 +16,6 @@ export async function render() {
         
         let html = compileHTML(d);
 
-
-
-        //var maxSteps = sheets.Floors.length;
-
-        // sheets.Floors.map((obj,k)=>{
-        //     obj.maxSteps = maxSteps; //aded maxSteps ref for app.js
-
-        //     if(obj.Victims_status){
-        //         obj.hasVictims = true;
-        //     }else{
-        //         obj.hasVictims = false;
-        //     }
-
-        //     if(obj.Time_standfirst){
-        //         obj.hasTimeCopy = true;
-        //     }else{
-        //         obj.hasTimeCopy = false;
-        //     }
-
-        //     if(obj.Summary){
-        //         obj.hasSummary = true;
-        //     }else{
-        //         obj.hasSummary = false;
-        //     }
-
-        // })
-
-        // var hbMainTemplate = Handlebars.compile(mainTemplate);
-        // var compiled = hbMainTemplate(sheets);
-        // var html = compiled;
-        //return html;
-
         return html;
     });
    
@@ -56,6 +24,9 @@ export async function render() {
 function formatData(data) {
     var newObj = {};
     let count = 0;
+
+    let headGroup  = data.sheets.headerCopy;
+    
     data.sheets.Sheet1.map((obj,k) => {
     	obj.ref = k;
     })
@@ -68,10 +39,18 @@ function formatData(data) {
     	obj.groupRef = k;
         obj.objArr.map((ob) => {
         	ob.groupRef = obj.groupRef;
-        })	
+        })
+
+        headGroup.map((headOb) => {
+            if(headOb['card-group'] == obj.sortOn )  {
+                obj.Header = headOb.Header;
+                obj.Standfirst = headOb.Standfirst;
+            }  
+        })
+
 
     });
-
+    
     newObj.groups = groups;
 
     return newObj;

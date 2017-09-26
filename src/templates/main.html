@@ -4,27 +4,26 @@
 <div class="main">
     <div class="interactive-nav">
         <div class='interactive-nav__inner'>
-            Jump to
+           
             {{#groups}}
+            <div class="gv-nav-holder">
                 <a href="#group-{{groupRef}}" data-jump-to='{{groupRef}}'>{{sortOn}}</a>
+            </div>    
             {{/groups}}
         </div>
     </div>
 
     {{#groups}}
-    <div class='policy-group' id="group-{{groupRef}}" data-scroll>
-        <div class="policy-group__header">
-            <div class='policy-group__header__text'>
-                <h2 class='policy-group__header__text__title'>{{sortOn}}</h2>
-               <!--  <p class='policy-group__header__text__description'>{{intro}}</p> -->
+    <div class='card-group' id="group-{{groupRef}}" data-scroll>
+        <div class="card-group__header">
+            <div class='card-group__header__text' id="group-header-{{groupRef}}">
+                <h2 class='card-group__header__text__title'>{{Header}}</h2>
+                <p class='card-group__header__text__description'>{{Standfirst}}</p>
             </div>
         </div>
         {{>cardstack}}
         <div class='pagination'></div>
     </div>
-
-   
-
     {{/groups}}
 
     

@@ -1,8 +1,8 @@
 
 
 
-<div class="card-icon" style="background-image: url('<%= path %>/assets/icons/{{card}}.png')"></div>
-<p class="card-party">{{card-head}}</p>
+{{#if image}}<div class="card-icon" style="background-image: url('{{image}}')"></div>{{/if}}
+<h3 class="card-head">{{card-head}}</h3>
 
 <div class="card-summary">
 	{{card-sub-heading}}
