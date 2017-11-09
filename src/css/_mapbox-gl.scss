@@ -1,21 +1,8 @@
-html,
-body {
-    @include fs-bodyCopy(2);
-
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-    background-color: #f6f6f6;
-}
-
-
 .mapboxgl-map {
     font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
     overflow: hidden;
     position: relative;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
-
-    margin:0; padding:0;
 }
 
 .mapboxgl-canvas-container.mapboxgl-interactive,
@@ -439,5 +426,3 @@ a.mapboxgl-ctrl-logo {
     }
 /* stylelint-enable */
 }
-
-

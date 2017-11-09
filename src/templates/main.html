@@ -1,1 +1,184 @@
-<div>Hello world!</div>
+<script src='../assets/mapbox-gl.js'></script>
+<script src='../assets/style-layers.js'></script>
+<script src='../assets/constituencies.js'></script>
+<script src='../assets/fires.js'></script>
+<script src='../assets/iraq-oilfields.js'></script>
+<script src='../assets/myanmar-province.js'></script>
+
+
+<div id='map'></div>
+<div id='labels'>
+	<svg id='svg' viewBox="0 0 620 469" width="620px" height="469px">
+	<image id='svgImg' width="620" height="469" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="" visibility="none" src=""></image>
+	</svg>
+</div>
+<div id='geoInfo'></div>
+<div id='scale'></div>
+<div class='closeButton'></div>
+
+
+<div id="ui">
+    <button onClick="imgDownload()">get png</button>
+    <button onClick="getgeoInfo()">get svg</button>
+    <button id="backMap" onClick="removeLabels()" disabled>go back to map</button>
+
+
+
+    <div id="selectors-container">
+
+      <div class="column">
+        <p>Geography</p>
+        <ul>
+        <li>
+            <label>
+              <input type="checkbox" onClick="toggleBySource('hillshade')" checked>
+              <span class="slider">Terrain</span>
+            </label>
+        </li>
+        <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('waterway')" checked>
+              <span class="slider">Waterways</span>
+            </label>
+        </li>
+        </ul>
+      </div>
+      <div class="column">
+        <p>Land use</p>
+        <ul>
+          <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('parks')" checked>
+              <span class="slider">Parks</span>
+            </label>
+        </li>
+        <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('national_park')" checked>
+              <span class="slider">National parks</span>
+            </label>
+        </li>
+        <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('industrial')" checked>
+              <span class="slider">Industrial</span>
+            </label>
+        </li>
+        <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('school')" checked>
+              <span class="slider">Schools</span>
+            </label>
+        </li>
+         <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('hospital')" checked>
+              <span class="slider">Hospitals</span>
+            </label>
+        </li>
+        <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('building')" checked>
+              <span class="slider">Buildings</span>
+            </label>
+        </li>
+        </ul>
+      </div>
+      <div class="column">
+        <p>Roads</p>
+        <ul>
+          <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('Motorways')" checked>
+              <span class="slider">Motorways</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('primary-road')" checked>
+              <span class="slider">Primary roads</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('secondary-road')" checked>
+              <span class="slider">Secondary roads</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('streets')" checked>
+              <span class="slider">Streets</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('rail-roads')" checked>
+              <span class="slider">Rail</span>
+            </label>
+          </li>
+        </ul>
+      </div>
+      <div class="column">
+        <p>Political</p>
+        <ul>
+           <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('admin-2-boundaries')" checked>
+              <span class="slider">Countries</span>
+            </label>
+          </li>
+           <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('admin-2-boundaries-dispute')" checked>
+              <span class="slider">Disputed boundaries</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('admin-3-4-boundaries')" checked>
+              <span class="slider">Estates</span>
+            </label>
+          </li>
+        </ul>
+      </div>
+      <div class="column">
+        <p>Labels</p>
+        <ul>
+          <li>
+            <label>
+              <input type="checkbox" onClick="toggleBySource('country_label')" checked>
+              <span class="slider">Country</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox" onClick="toggleBySource('place_label')" checked>
+              <span class="slider">City</span>
+            </label>
+          </li>
+           <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('road-label')" checked>
+              <span class="slider">Street</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox" onClick="toggleById('place-island')" checked>
+              <span class="slider">Island</span>
+            </label>
+          </li>
+        </ul>
+      </div>
+      <div class="column"></div>
+      <div class="column"></div>
+      <div class="column"></div>
+      
+    </div>
+
+
+
+
+    
+</div>
