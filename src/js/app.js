@@ -20,14 +20,14 @@ var mapboxStyle = "styles/v1/guardian/cj849befy0k092qmnn3p6onkx/static/";
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ3VhcmRpYW4iLCJhIjoiNHk1bnF4OCJ9.25tK75EuDdgq5GxQKyD6Fg';
 var dpi = 120;
 
-
+var featureElement;
 var transform = d3geo.geoTransform({point: projectPoint});
 var path = d3.geoPath().projection(transform);
 
-    function projectPoint(lon, lat) {
-        var point = map.project(new mapboxgl.LngLat(lon, lat));
-        this.stream.point(point.x, point.y);
-    }
+function projectPoint(lon, lat) {
+    var point = map.project(new mapboxgl.LngLat(lon, lat));
+    this.stream.point(point.x, point.y);
+}
 
 /*var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 " + width + " " + height);
@@ -41,6 +41,7 @@ Object.defineProperty(window, 'devicePixelRatio', {
     get: function() {return dpi / 96}
 });
 
+
 var map = new mapboxgl.Map({
     container: 'map', // container id
     style: 'mapbox://styles/guardian/cj849befy0k092qmnn3p6onkx?aisdbaAaaa', // stylesheet location
@@ -48,6 +49,20 @@ var map = new mapboxgl.Map({
     zoom: zoom,
     preserveDrawingBuffer: true
 });
+
+
+window.makeUK = function makeUK()
+{
+    var svg = d3.select("#svg")
+
+    d3.json("../assets/uk.json", function(error, uk) {
+      if (error) return console.error(error);
+
+      featureElement = svg.append("path")
+          .datum(topojson.feature(uk, uk.objects.subunits))
+          .attr("d", path);
+    });
+}
 
 
 /*var geoInfo = new mapboxgl.Map({
@@ -59,11 +74,25 @@ var map = new mapboxgl.Map({
 
 var blank = document.createElement("div");
 blank.className = "blank";
+
 var controlContainer = document.getElementsByClassName("mapboxgl-map")[0];
 controlContainer.appendChild(blank)
 
 
-map.on('zoom', function(){/*console.log(map.getZoom())*/})
+map.on('zoom', update)
+map.on("moveend", update)
+
+map.on('mousedown', function(event)
+{
+    document.getElementById("geoInfo").style.visibility='hidden';
+    document.getElementById("svg").style.visibility='hidden';
+})
+
+map.on('zoomstart', function(event)
+{
+    document.getElementById("svg").style.visibility='hidden';
+})
+
 
 
 map.on('load', function () {
@@ -322,19 +351,11 @@ function update(e)
     });*/
 
      document.getElementById("geoInfo").style.visibility='visible';
+
+     featureElement.attr("d", path);
+     document.getElementById("svg").style.visibility='visible';
 }
 
-map.on("moveend", update)
-
-map.on('mousedown', function(event)
-{
-    document.getElementById("geoInfo").style.visibility='hidden';
-})
-
-map.on('zoomstart', function(event)
-{
-    document.getElementById("geoInfo").style.visibility='hidden';
-})
 
 function takeScreenShot()
 {
@@ -362,21 +383,6 @@ window.imgDownload = function imgDownload()
     link.href=img;
     link.download = 'map.png';
     link.click();
-}
-
-
-function makeUK()
-{
-
-    var svg = d3.select("#svg")
-
-    d3.json("../assets/uk.json", function(error, uk) {
-      if (error) return console.error(error);
-
-      svg.append("path")
-          .datum(topojson.feature(uk, uk.objects.subunits))
-          .attr("d", path);
-    });
 }
 
 
@@ -413,8 +419,6 @@ window.getgeoInfo = function getgeoInfo()
         var lineString = {type: "FeatureCollection", geometries: []};
 
         console.log(text)
-
-        makeUK()
 
         text.map(function(geo,i)
             {
