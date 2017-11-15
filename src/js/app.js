@@ -1,3 +1,12 @@
+import * as d3B from 'd3/index'
+import * as d3Select from 'd3-selection'
+import * as d3Queue from 'd3-queue'
+import * as topojson from 'topojson'
+import * as d3geo from 'd3-geo'
+import * as d3gp from 'd3-geo-projection'
+
+var d3 = Object.assign({}, d3B, d3Select, d3Queue, d3geo);
+
 var width = 620;
 var height = 469;
 var lat = 51.4684055;
@@ -10,6 +19,15 @@ var api = "https://api.mapbox.com/"
 var mapboxStyle = "styles/v1/guardian/cj849befy0k092qmnn3p6onkx/static/";
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ3VhcmRpYW4iLCJhIjoiNHk1bnF4OCJ9.25tK75EuDdgq5GxQKyD6Fg';
 var dpi = 120;
+
+
+var transform = d3geo.geoTransform({point: projectPoint});
+var path = d3.geoPath().projection(transform);
+
+    function projectPoint(lon, lat) {
+        var point = map.project(new mapboxgl.LngLat(lon, lat));
+        this.stream.point(point.x, point.y);
+    }
 
 /*var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 " + width + " " + height);
@@ -347,16 +365,26 @@ window.imgDownload = function imgDownload()
 }
 
 
+function makeUK()
+{
+
+    var svg = d3.select("#svg")
+
+    d3.json("../assets/uk.json", function(error, uk) {
+      if (error) return console.error(error);
+
+      svg.append("path")
+          .datum(topojson.feature(uk, uk.objects.subunits))
+          .attr("d", path);
+    });
+}
+
+
 window.getgeoInfo = function getgeoInfo()
 {
 
     var layers2toggle = ['country_label', 'place_label'];
-    var layerPromises = layers2toggle.map(function(layer)
-        {
-            toggleBySource(layer);
-        });
-
-
+    var layerPromises = layers2toggle.map(function(layer){toggleBySource(layer);});
 
     Promise.all(layerPromises)
     .then(toggleById('road-label'))
@@ -377,7 +405,53 @@ window.getgeoInfo = function getgeoInfo()
         var json = JSON.stringify(features, null, 2);
         var text = JSON.parse(json);
 
-        text.map(function(geo){console.log(geo)})
+        var svgImg =  document.getElementById("svgImg")
+
+        var svgContainer = document.getElementById('svg');
+
+        var svg = d3.select("#svg")
+        var lineString = {type: "FeatureCollection", geometries: []};
+
+        console.log(text)
+
+        makeUK()
+
+        text.map(function(geo,i)
+            {
+                console.log(geo.geometry.type, "\r", geo.layer.source, "\r", geo)
+                
+
+                if(geo.geometry.type == 'LineString')
+                {
+                    lineString.features.push({"type": geo.geometry.type, "id": i, "arcs": {"type": geo.geometry.type, "coordinates": [geo.geometry.coordinates]}})
+                }
+
+                
+
+
+
+               /*var svg = d3.select(svgContainer)
+                .data(topojson.feature(geo.geometry).coordinates)
+                .enter()
+                .append("path")
+                .attr("d", function(d){console.log(d);return d});
+                */
+                
+                  
+            })
+
+/*
+        d3.json("../assets/madrid.geojson", function(error, json) {
+console.log(json)
+          svg.append("path")
+              .attr("class", "states")
+              .datum(topojson.feature(json, json.features.coordinates))
+              .attr("d", path);
+        })
+*/
+
+
+        
     })
 
     
