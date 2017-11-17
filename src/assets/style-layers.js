@@ -756,66 +756,8 @@ var styleLayers = [
                     0
                 ]
             ],
-},
-
-
+    },
     {
-        "id": 'admin-3-4-boundaries',
-        'type': 'line',
-        'source': {
-            'type': 'vector',
-            "url": "mapbox://mapbox.mapbox-streets-v7"
-        },
-        "source-layer": "admin",
-        "layout": {
-                "line-join": "round",
-                "line-cap": "round",
-                "visibility": "none"
-        },
-        "paint": {
-                "line-opacity": 1,
-                "line-width": {
-                    "base": 1,
-                    "stops": [
-                        [
-                            0,
-                            1
-                        ],
-                        [
-                            10,
-                            2
-                        ],
-                        [
-                            10.1,
-                            2
-                        ],
-                        [
-                            20,
-                            6
-                        ]
-                    ]
-                },
-        "line-color": "#B3B3B4",
-        "line-dasharray": [1, 2]
-        },
-        "layout": {
-                "visibility": "visible"
-            },
-        "filter": [
-                "all",
-                [
-                    ">=",
-                    "admin_level",
-                    3
-                ],
-                [
-                    "==",
-                    "maritime",
-                    0
-                ]
-            ],
-},
-{
         "id": 'admin-2-boundaries',
         'type': 'line',
         'source': {

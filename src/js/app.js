@@ -20,9 +20,6 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiZ3VhcmRpYW4iLCJhIjoiNHk1bnF4OCJ9.25tK75EuDdgq
 var dpi = 120;
 var scaleWidht = 120;
 
-//http://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v7/14/4823/6160.mvt?access_token=<your access token>
-//https://api.mapbox.com/styles/v1/guardian/cj849befy0k092qmnn3p6onkx.mvt?fresh=true&title=true&access_token=pk.eyJ1IjoiZ3VhcmRpYW4iLCJhIjoiNHk1bnF4OCJ9.25tK75EuDdgq5GxQKyD6Fg#17.0/51.521175/-0.078854/0
-
 var featureElement;
 var transform = d3geo.geoTransform({point: projectPoint});
 var path = d3.geoPath().projection(transform);
@@ -30,6 +27,10 @@ var path = d3.geoPath().projection(transform);
 function projectPoint(lon, lat) {
     var point = map.project(new mapboxgl.LngLat(lon, lat));
     this.stream.point(point.x, point.y);
+}
+
+function pointProjection(lon, lat) {
+    return map.project(new mapboxgl.LngLat(lon, lat));
 }
 
 Object.defineProperty(window, 'devicePixelRatio', {
@@ -168,7 +169,7 @@ window.getgeoInfo = function getgeoInfo()
     var layerPromises = layers2toggle.map(function(layer){toggleById(layer);});
 
     Promise.all(layerPromises)
-    .then(() => {
+   /* .then(() => {
         setTimeout(function(){
             var svgImg =  document.getElementById("svgImg");
             var img = map.getCanvas().toDataURL();
@@ -177,7 +178,7 @@ window.getgeoInfo = function getgeoInfo()
             svgImg.setAttributeNS(null, 'visibility', 'visible');
 
         }, 500);
-    })
+    })*/
     .then(() => {
         document.getElementById("backMap").disabled = false;
 
@@ -203,8 +204,35 @@ window.getgeoInfo = function getgeoInfo()
             svg.selectAll("path")
             .data(map_raw.features)
             .enter()
+            .filter(function(d){ return d.geometry.type != "Point" })
             .append('path')
-            .attr("d", path);
+            .attr('class', function(d){ return d.layer.id})
+            .attr("d", path)
+            .style("stroke-dasharray", function(d)
+                {
+                    if(d.layer.id == 'admin-3-4-boundaries')
+                    {
+                        return ("1, 2")
+                    }
+                    if(d.layer.id == 'admin-2-boundaries-dispute')
+                    {
+                        return ("0.8, 2")
+                    }
+                });
+
+
+            svg.selectAll("circle")
+            .data(map_raw.features)
+            .enter()
+            .filter(function(d){ return d.geometry.type == "Point" })
+            .append('circle')
+            .attr('class', function(d){return d.layer.id})
+            .attr("cx", function (d) { var point = pointProjection(d.geometry.coordinates[0], d.geometry.coordinates[1]); return  point.x})
+            .attr("cy", function (d) { var point = pointProjection(d.geometry.coordinates[0], d.geometry.coordinates[1]); return  point.y})
+            .attr("r", "3.5px")
+            .attr("fill", "#808080");
+
+
 
 
 
