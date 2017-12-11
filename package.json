@@ -50,6 +50,7 @@
   "dependencies": {
     "d3": "^4.11.0",
     "d3-geo-projection": "^2.3.1",
-    "topojson": "^3.0.2"
+    "topojson": "^3.0.2",
+    "which-country": "^1.0.0"
   }
 }

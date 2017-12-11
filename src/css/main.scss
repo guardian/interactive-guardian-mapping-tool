@@ -11,105 +11,12 @@
 .interactive-atom {
     margin: 0 !important;
 }
-
-#map { position:relative; display: block; top:0; bottom:0; width:620px; height: 469px }
-        #geoInfo { position:absolute; top:0; bottom:0; width:620px; height: 469px; pointer-events:none; }
-        #labels { position:absolute; top:0; bottom:0; width:620px; height: 469px; pointer-events:none;}
-        .mapboxgl-ctrl .mapboxgl-ctrl-logo{display: none ; }
-        .mapboxgl-ctrl-attrib {display: none ; }
-
-
-        .mapboxgl-ctrl-bottom-left .mapboxgl-ctrl
-        {
-            margin: 0 0 -2px;
-            background-color: none !important;
-
-        }
-
-        .mapboxgl-ctrl .mapboxgl-ctrl-scale
-        {
-            display: none;
-        }
-
-        .mapboxgl-ctrl-scale {
-            background-color: none !important;
-            font-size: 12px;
-            border-width: 2px 1px 0 0;
-            border-style: solid none none none;
-            border-color: #AAAAAA;
-            padding: 0;
-            color: #AAAAAA;
-            font-family: 'DS3DisplaySans',"Guardian Text Sans Web";
-
-            background-image: linear-gradient(#AAAAAA 50%, rgba(255,255,255,0) 0%);
-            background-position: right;
-            background-size: 1px 50px;
-            background-repeat: repeat-y;
-        }
-
-        .mapboxgl-ctrl-scale:first-child
-        {
-            border-width: 0 0 2px 0;
-            border-style: none none solid none;
-
-            background-image: linear-gradient(rgba(255,255,255,0) 50%, #AAAAAA 50%);
-            background-position: right;
-            background-size: 1px 50px;
-            background-repeat: repeat-y;
-        }
-
-        .mapboxgl-ctrl-bottom-left .mapboxgl-ctrl-bottom-right {
-            bottom: 0%;
-        }
-        .blank{position: absolute; width: 620px; height: 9%; background: white; bottom: 0%; z-index: 1;}
-        .blankSvg{fill: white;}
-        .mapboxgl-ctrl-bottom-left{position: absolute; bottom: 0%}
-
-        
-        svg{width:620px; height: auto;}
-        img { width: 100%; height: auto; }
-        g{width: 20px; height: auto;}
-        text{cursor: pointer; text-anchor: middle; fill:#909090;}
-
-        .edit:hover{fill:#EF4136; cursor: move;}
-        .closeButton{width: 20px; height:20px; background-image: url("img/icons.png"); position: absolute; top: 0px; left: 0px; visibility: hidden;}
-
-        .marker {
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background-color: #B41700;
-          fill: #B41700;
-        }
-
-        .st0{fill:none;stroke:#929292;stroke-width:1px;stroke-miterlimit:10;height:7px; color: #AAAAAA;}
-        #kms{border-width: 0 0 2px 0;}
-        #miles{border-width: 2px 1px 0 0;}
-        .svgScaleText{font-family: 'DS3DisplaySans',"Guardian Text Sans Web";color: #AAAAAA;font-size: 12px;text-anchor: start;}
-        .scaleCenterLine{stroke:#929292;stroke-width:2px;}
-        .scaleVerticalLine{stroke:#929292;stroke-width:1px;}
-
-
-        .button {position: relative; display: block;}
-
-        .country-label-lg{font-family: 'DE5DisplayEgyptianSemiBold'; font-style:"Regular"; font-size: 24px;}
-        .country-label-md{font-family: 'DE5DisplayEgyptianSemiBold'; font-style:"Regular"; font-size: 16px;}
-        .place-town,.road-label,.place-village{font-family: 'DS3DisplaySans', "Guardian Text Sans Web"; font-style:"Regular"; line-height: 18px; font-size: 14px;}
-        .place-city-lg-s,.place-city-md-s,.place-city-md-s,.place-city-md-n,.place-city-lg-n,.place-city-sm{font-family: 'DE4DisplayEgyptianMedium', "GuardianEgyptianWeb-Semibold"; font-size: 20px;}
-        .point{width:7px; height: 7px; fill: #808080;}
-
-        label{cursor: pointer;}
-        
-        ul{list-style:none; margin:0; padding:0;}
-        li{margin:none; padding:none;}
-
-        #selectors-container{width:620px; height: auto;}
-        .column{width:20%; height: auto; position:relative; float:left;}
-
-        p{font-family: 'DS3DisplaySans',"Guardian Text Sans Web"; font-weight:800; color:#b3b3b4; }
-
-        span{font-family: 'DS3DisplaySans',"Guardian Text Sans Web"; color:#676767; }
-
-
-
-
+.mapboxgl-ctrl-bottom-left {
+    visibility:hidden;
+}
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}

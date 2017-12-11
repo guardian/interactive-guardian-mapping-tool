@@ -1,221 +1,561 @@
 <script src='../assets/mapbox-gl.js'></script>
 <script src='../assets/style-layers.js'></script>
-<script src='../assets/constituencies.js'></script>
-<script src='../assets/fires.js'></script>
-<script src='../assets/iraq-oilfields.js'></script>
-<script src='../assets/myanmar-province.js'></script>
-
+<script src='../assets/mapbox-gl-geocoder.min.js'></script>
 
 <style type="text/css">
+
+html, body{overflow: scroll;}
+
+#map-container{width:620px; height: 430px; position:relative; display: block; top:0; bottom:0;}
+#geoInfo {position:absolute; top:0; bottom:0; pointer-events:none; }
+#locator-container {width:120px; position:absolute; top:0; bottom:0; pointer-events:none; z-index: 10; }
+#scale-container {width:120px; position:absolute; top:0; bottom:0; pointer-events:none; z-index: 11; }
+
+.mapboxgl-ctrl .mapboxgl-ctrl-logo{display: none ; }
+.mapboxgl-ctrl-attrib {display: none ; }
+
+.mapboxgl-ctrl-scale {
+    background-color: none !important;
+    font-size: 12px;
+    border-width: 2px 1px 0 0;
+    border-style: solid none none none;
+    border-color: #AAAAAA;
+    padding: 0;
+    color: #AAAAAA;
+    font-family: 'DS3DisplaySans',"Guardian Text Sans Web";
+    background-image: linear-gradient(#AAAAAA 50%, rgba(255,255,255,0) 0%);
+    background-position: right;
+    background-size: 1px 50px;
+    background-repeat: repeat-y;
+}
+
+.mapboxgl-ctrl-bottom-left .mapboxgl-ctrl
+{
+    margin: 0 0 -2px;
+    background-color: none !important;
+}
+.mapboxgl-ctrl-scale:first-child
+{
+    border-width: 0 0 2px 0;
+    border-style: none none solid none;
+    background-image: linear-gradient(rgba(255,255,255,0) 50%, #AAAAAA 50%);
+    background-position: right;
+    background-size: 1px 50px;
+    background-repeat: repeat-y;
+}
+
+img{ width: 100%; height: auto; }
+g{width: 20px; height: auto;}
+/*text{cursor: pointer; text-anchor: middle; fill:#909090;}*/
+.edit:hover{fill:#EF4136; cursor: move;}
+        .closeButton{width: 20px; height:20px; background-image: url("img/icons.png"); position: absolute; top: 0px; l; visibility: hidden;}
+.marker {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #B41700;
+  fill: #B41700;
+}
+.st0{fill:none;stroke:#929292;stroke-width:1px;stroke-miterlimit:10;height:7px; color: #AAAAAA;}
+#kms{border-width: 0 0 2px 0;}
+#miles{border-width: 2px 1px 0 0;}
+.svgScaleText{font-family: 'DS3DisplaySans',"Guardian Text Sans Web";color: #AAAAAA;font-size: 12px;text-ancho;}
+.scaleCenterLine{stroke:#929292;stroke-width:2px;}
+.scaleVerticalLine{stroke:#929292;stroke-width:1px;}
+.ui-button{
+  position: relative;
+  float: left;
+  border: none;
+  max-height: 37px;
+  padding: 11px;
+  background-color: #898984;
+  color: #fff;
+  outline: none;
+  transform: translateY(2px);
+  box-sizing: border-box;
+  margin: 0 5px;
+}
+.country-label-lg{font-family: 'DE5DisplayEgyptianSemiBold'; font-style:"Regular"; font-size: 24px;}
+.country-label-md{font-family: 'DE5DisplayEgyptianSemiBold'; font-style:"Regular"; font-size: 16px;}
+.place-town,.road-label,.place-village{font-family: 'DS3DisplaySans', "Guardian Text Sans Web"; font-style:"Regular"; line-height: 18px; font-size: 14px;}
+.place-city-lg-s,.place-city-md-s,.place-city-md-s,.place-city-md-n,.place-city-lg-n,.place-city-sm{font-family: 'DE4DisplayEgyptianMedium', "GuardianEgyptianWeb-Semibold"; font-size: 20px;}
+.section {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 12px;
+}
+.section-header:not(.ignore){
+  position: relative;
+  float: left;
+  width: 100%;
+  background-color: #EDEDED;
+  border-top: 1px solid #DCDCDC;
+  font-size: 13px;
+  line-height: 16px;
+  font-family: "Guardian Agate Sans 1 Web","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  margin-bottom: 6px;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: 20px;
   
+}
+.ignore
+{
+  position: relative;
+  float: left;
+  width: 100%;
+  background-color: #EDEDED;
+  border-top: 1px solid #DCDCDC;
+  font-size: 13px;
+  line-height: 16px;
+  font-family: "Guardian Agate Sans 1 Web","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  margin-bottom: 6px;
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
+select, textarea, input {
+    font-size: 13px;
+    line-height: 16px;
+    font-family: "Guardian Agate Sans 1 Web","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+    background-color: white;
+    border: none;
+    padding: 11px;
+    border: 1px solid #DCDCDC;
+    box-sizing: border-box;
+}
+
+textarea {
+    width: 100%;
+}
+
+
+.point{width:7px; height: 7px; fill: #808080;}
+label{cursor: pointer; position: relative;float: left;width: 50%}        
+
+.column{width:20%; height: auto; position:relative; float:left;}
+p{font-family: 'DS3DisplaySans',"Guardian Text Sans Web"; font-weight:800; color:#b3b3b4; }
+span{font-family: 'DS3DisplaySans',"Guardian Text Sans Web"; color:#676767; }
+
 .admin-2-boundaries{stroke: #B3B3B4; fill: none;}
 .admin-2-boundaries-dispute{stroke: #B3B3B4; fill: none;}
 .admin-3-4-boundaries{stroke: #B3B3B4; fill: none; stroke-linejoin: round;}
 
-.hillshade_shadow_extreme{fill:hsl(0, 0%, 65%);opacity: 0.08}
-.hillshade_shadow_dark{fill:hsl(0, 0%, 85%);opacity: 0.08}
-.hillshade_shadow_med{fill:hsl(0, 0%, 85%);opacity: 0.08}
-.hillshade_shadow_faint{fill:hsl(0, 0%, 85%);opacity: 0.08}
-.hillshade_highlight_med{fill:hsl(0, 0%, 100%);opacity: 0.15}
-.hillshade_highlight_bright{fill:hsl(0, 0%, 100%);opacity: 0.15}
-.water{fill:#FFFFFF;}
-.road-label{}
-.place-city-sm{}
-.place-town{}
-.place-village{}
-.rail-roads{stroke: #dadada; stroke-width:1px; fill: none;}
+.road-label{stroke: #dadada; stroke-width:1px; fill: none;}
 
 
-.Motorways{stroke: #dadada; stroke-width:1px; fill: none;}
-.hospital{}
-.school{}
-.industrial{}
+
+/*-------------------------------------------------------ROADS------------------------------------------------------------*/
+
+
+
+
+
+/*-------------------------------------------------------LAND USE------------------------------------------------------------*/
+
+
+.hospital{fill: hsl(0, 0%, 90%)}
+.building{fill: hsl(0, 0%, 90%)}
+.school{fill: hsl(0, 0%, 90%)}
+.industrial{fill: hsl(0, 0%, 92%);}
 .national_park{fill:#E3F0E1;opacity: 0.65;}
 .parks{fill:#E3F0E1;opacity: 0.65;}
 
+
+/*-------------------------------------------------------GEOGRAPHY------------------------------------------------------------*/
+
 .waterway{stroke: #FFFFFF; fill:none;}
-.road{stroke: #dadada; stroke-width:1px; fill: none;}
-.road-label{stroke: #dadada; stroke-width:1px; fill: none;}
-.secondary-road{stroke: #dadada; stroke-width:1px; fill: none;}
-.primary-road{stroke: #dadada; stroke-width:1px; fill: none;}
-.streets{stroke: #dadada; stroke-width:1px; fill: none;}
+.hillshade_highlight_bright{fill: #f4f4f4}
+.hillshade_highlight_med{fill: #ececec}
+.hillshade_shadow_faint{fill: #e5e5e5}
+.hillshade_shadow_med{fill: #dddddd}
+.hillshade_shadow_dark{fill: #d6d6d6}
+.hillshade_shadow_extreme{fill: #cecece}
 
 
 
+#top-margin{position: relative;float: left; padding: 0; margin:0; width: 100%;padding: 0;margin: 0;}
+.measures{position: relative;float: left;padding: 0; margin: 0;}
+.measures-input{position: relative;float: left;padding: 0; margin: 0; width: 60px;}
 
+.ui-container{
+    width: 400px;
+    position: fixed;
+    right: 0px;
+    background-color: #f6f6f6;
+    border-left: 1px solid #DCDCDC;
+    top: 0px;
+    height: 100vh;
+    overflow: auto;
+}
+.button-container{position: relative;float: left;width: 100%;}
+
+input, button {
+    font-size: 13px;
+    line-height: 18px;
+    font-family: "Guardian Text Sans Web","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+}
+
+.measures-input,
+.measures-input *:after,
+.measures-input *:before,
+.mapboxgl-ctrl-geocoder,
+.mapboxgl-ctrl-geocoder *,
+.mapboxgl-ctrl-geocoder *:after,
+.mapboxgl-ctrl-geocoder *:before {
+  -webkit-box-sizing:border-box;
+     -moz-box-sizing:border-box;
+          box-sizing:border-box;
+}
+
+.meassures-container{
+  position: absolute;
+  z-index: 10;
+  padding: 10px 14px;
+}
+
+.meassures-container p{
+  position: relative;
+  float: left;
+  margin: 7px 5px 0 -5px;
+  color: black;
+}
+
+.measures-input{
+  font:15px/20px "Guardian Text Sans Web","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+  position:relative;
+  background-color:white;
+  min-width:60px;
+  max-width:80px;
+  border-radius:3px;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+  margin: 0 10px 0 0;
+}
+
+.measures-form input[type='text'] {
+  font-size:14px;
+  width:60px;
+  border:0;
+  height:40px;
+  color:rgba(0,0,0,.5);
+  padding:10px 10px 10px 10px;
+  white-space:nowrap;
+  overflow:hidden;
+  }
+
+
+.mapboxgl-ctrl-geocoder {
+  font:15px/20px "Guardian Text Sans Web","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+  position:relative;
+  background-color:white;
+  width:90%;
+  min-width:240px;
+  max-width:360px;
+  z-index:1;
+  border-radius:3px;
+  }
+
+.mapboxgl-ctrl-geocoder input[type='text'] {
+  font-size:14px;
+  width:100%;
+  border:0;
+  background-color:transparent;
+  height:40px;
+  margin:0;
+  color:rgba(0,0,0,.5);
+  padding:10px 10px 10px 40px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  overflow:hidden;
+  }
+  .mapboxgl-ctrl-geocoder input:focus {
+    color:rgba(0,0,0,.75);
+    outline:0;
+    box-shadow:none;
+    outline:thin dotted\8;
+    }
+
+.mapboxgl-ctrl-geocoder .geocoder-icon-search {
+  position:absolute;
+  top:10px;
+  left:10px;
+  }
+.mapboxgl-ctrl-geocoder button {
+  padding:0;
+  margin:0;
+  background-color:#fff;
+  border:none;
+  cursor:pointer;
+  }
+.mapboxgl-ctrl-geocoder .geocoder-pin-right * {
+  background-color:#fff;
+  z-index:2;
+  position:absolute;
+  right:10px;
+  top:10px;
+  display:none;
+  }
+
+.mapboxgl-ctrl-geocoder,
+.mapboxgl-ctrl-geocoder ul {
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+  }
+
+/* Suggestions */
+.mapboxgl-ctrl-geocoder ul {
+  background-color:#fff;
+  border-radius: 0 0 3px 3px;
+  left:0;
+  list-style:none;
+  margin:0;
+  padding:0;
+  position:absolute;
+  width:100%;
+  top:100%;
+  z-index:1000;
+  overflow:hidden;
+  font-size:12px;
+  }
+
+  .mapboxgl-ctrl-bottom-left .mapboxgl-ctrl-geocoder ul,
+  .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-geocoder ul {
+    top:auto;
+    bottom:100%;
+  }
+  .mapboxgl-ctrl-geocoder ul > li > a {
+    clear:both;
+    cursor:default;
+    display:block;
+    padding:5px 10px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:#404040;
+    }
+    .mapboxgl-ctrl-geocoder ul > li:last-child > a { border-bottom:none; }
+    .mapboxgl-ctrl-geocoder ul > li > a:hover {
+      color:#202020;
+      background-color:#f3f3f3;
+      text-decoration:none;
+      cursor:pointer;
+      }
+    .mapboxgl-ctrl-geocoder ul > li.active > a {
+      color:#202020;
+      background-color:#e3e3e3;
+      text-decoration:none;
+      cursor:pointer;
+      }
+
+@-webkit-keyframes rotate { from { -webkit-transform: rotate(0deg); } to { -webkit-transform: rotate(360deg); } }
+   @-moz-keyframes rotate { from { -moz-transform: rotate(0deg); } to { -moz-transform: rotate(360deg); } }
+    @-ms-keyframes rotate { from { -ms-transform: rotate(0deg); } to { -ms-transform: rotate(360deg); } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* icons */
+.geocoder-icon {
+  display:inline-block;
+  width:20px;
+  height:20px;
+  vertical-align:middle;
+  speak:none;
+  background-repeat:no-repeat;
+  }
+  .geocoder-icon-search {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmVyc2lvbj0iMS4xIj4NCiAgPHBhdGggZD0iTTguNSA0QzYgNCA0IDYgNCA4LjUgNCAxMSA2IDEzIDguNSAxMyA5LjQgMTMgMTAuMiAxMi44IDEwLjggMTIuM0wxMC45IDEyLjMgMTQuMyAxNS43QzE0LjUgMTUuOSAxNC43IDE2IDE1IDE2IDE1LjYgMTYgMTYgMTUuNiAxNiAxNSAxNiAxNC43IDE1LjkgMTQuNSAxNS43IDE0LjNMMTIuMyAxMC45IDEyLjMgMTAuOEMxMi44IDEwLjIgMTMgOS40IDEzIDguNSAxMyA2IDExIDQgOC41IDR6TTguNSA1LjVDMTAuMiA1LjUgMTEuNSA2LjggMTEuNSA4LjUgMTEuNSAxMC4yIDEwLjIgMTEuNSA4LjUgMTEuNSA2LjggMTEuNSA1LjUgMTAuMiA1LjUgOC41IDUuNSA2LjggNi44IDUuNSA4LjUgNS41eiIgZmlsbD0iIzAwMCIvPg0KPC9zdmc+);
+    }
+  .geocoder-icon-close {
+    background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCIgdmVyc2lvbj0iMS4xIiBoZWlnaHQ9IjIwIiB3aWR0aD0iMjAiPg0KICA8cGF0aCBkPSJtNSA1IDAgMS41IDMuNSAzLjUtMy41IDMuNSAwIDEuNSAxLjUgMCAzLjUtMy41IDMuNSAzLjUgMS41IDAgMC0xLjUtMy41LTMuNSAzLjUtMy41IDAtMS41LTEuNSAwLTMuNSAzLjUtMy41LTMuNS0xLjUgMHoiIGZpbGw9IiMwMDAiLz4NCjwvc3ZnPg==);
+    }
+  .geocoder-icon-loading {
+    background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB2aWV3Qm94PSIwIDAgMjAgMjAiPjxwYXRoIGQ9Im0xMCAyIDAgMy4zYzIuNiAwIDQuNyAyLjEgNC43IDQuN2wzLjMgMGMwLTQuNC0zLjYtOC04LTh6IiBmaWxsPSIjMDAwIi8+PHBhdGggZD0iTTEwIDJDNi44IDIgMy43IDQuMSAyLjYgNy4xIDEuNCAxMCAyLjEgMTMuNiA0LjUgMTUuOGMyLjQgMi40IDYuNCAyLjkgOS40IDEuMiAyLjUtMS40IDQuMi00LjIgNC4yLTctMS4xIDAtMi4yIDAtMy4zIDAgMC4xIDIuMi0xLjcgNC4zLTMuOCA0LjZDOC43IDE1IDYuNCAxMy44IDUuNyAxMS43IDQuOCA5LjcgNS42IDcuMSA3LjYgNiA4LjMgNS42IDkuMSA1LjMgMTAgNS4zYzAtMS4xIDAtMi4yIDAtMy4zeiIgc3R5bGU9ImZpbGw6IzAwMDtvcGFjaXR5OjAuMiIvPjwvc3ZnPg==);
+    -webkit-animation: rotate 400ms linear infinite;
+       -moz-animation: rotate 400ms linear infinite;
+        -ms-animation: rotate 400ms linear infinite;
+            animation: rotate 400ms linear infinite;
+    }
+
+    select {
+    width: 66%;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAFCAYAAABxeg0vAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDowMTgwMTE3NDA3MjA2ODExQUI2RjlENTcwRkQ2MjdBMiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpENjQ5OUMxNkJDQTYxMUUzQjYzMTgxMDk0NDVBNjBBNiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpENjQ5OUMxNUJDQTYxMUUzQjYzMTgxMDk0NDVBNjBBNiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjAxODAxMTc0MDcyMDY4MTFBQjZGOUQ1NzBGRDYyN0EyIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjAxODAxMTc0MDcyMDY4MTFBQjZGOUQ1NzBGRDYyN0EyIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+q5DYBQAAAHFJREFUeNpiNDY2vs/AwHAAiAvPnj37gQELAKoRAFL9QOzABCQMgVgBiO8DJRqgknCFIDGQHFSNISOSJEiiHohBtkyECucDMciARqDtIHkGRjSrHYDUeqgiBqjmQKDiAzA1jFjcqwDVxABV/ABZHiDAALZ7H2OQbTd0AAAAAElFTkSuQmCC);
+    background-repeat: no-repeat;
+    background-position: right 11px center;
+    padding-right: 38px;
+    -webkit-appearance: none;
+    border-radius: 0;
+    -moz-appearance: none;
+    text-indent: 0.01px;
+    align-items: center;
+    white-space: pre;
+    -webkit-rtl-ordering: logical;
+    color: black;
+}
+
+.section-option span
+{
+  margin-right: 10px;
+}
 
 
 </style>
 
-
-<div id='map'></div>
-<div id='labels'>
-	<svg id='svg' viewBox="0 0 620 469" width="620px" height="469px">
-	 <image id='svgImg' width="620" height="469" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="" visibility="none" src=""></image>
-	</svg>
+<div id='map-container'>
+  <div class='meassures-container'>
+  <form class="measures-form" name="measures-form">
+    <input class='measures-input' type="text" id="width" maxlength="4" placeholder="width" pattern="[0-9]" onkeydown="onResize(this)">
+    <p>x</p>
+    <input class='measures-input' type="text" id="height" maxlength="4" placeholder="height" pattern="[0-9]" onkeydown="onResize(this)">
+  </form>
 </div>
-<div id='geoInfo'></div>
-<div id='scale'></div>
-<div class='closeButton'></div>
+</div>
+<div id='svg-container'>
+  <div id='geoInfo'>
+    <svg id='svg' viewBox="0 0 620 430">
+      <clipPath id="cut-off-bottom">
+          <rect width="130" height="130" x='-5' y='-5'/>
+      </clipPath>
+       <g id='map-svg'></g>
+       <g id='locator-svg' clip-path="url(#cut-off-bottom)"></g>
+       <g id='scale-svg'></g>
+    </svg>
+  </div>
+</div>
 
 
-<div id="ui">
-    <button onClick="imgDownload()">get png</button>
-    <button onClick="getgeoInfo()">get svg</button>
-    <button id="backMap" onClick="removeLabels()" disabled>go back to map</button>
-    <button id="makeUK" onClick="makeUK()">make UK</button>
 
-
-
-    <div id="selectors-container">
-
-      <div class="column">
-        <p>Geography</p>
-        <ul>
-        <li>
-            <label>
-              <input type="checkbox" onClick="toggleBySource('hillshade')" checked>
-              <span class="slider">Terrain</span>
-            </label>
-        </li>
-        <li>
-            <label>
-              <input type="checkbox" onClick="toggleById('waterway')" checked>
-              <span class="slider">Waterways</span>
-            </label>
-        </li>
-        </ul>
+<div class="ui-container">
+  <div class="ui-options">
+    <section class="section">
+      <div class="section-header ignore">Options</div>
+      <div class="section-option">
+          <span>Locator alignment</span>
+          <select id='position-selector' onchange="locatorPosition(this.value)">
+            <option value="top-left">Top left</option>
+            <option value="top-right">Top right</option>
+            <option value="bottom-left">Bottom left</option>
+            <option value="bottom-right" selected="selected">Bottom right</option>
+          </select>
       </div>
-      <div class="column">
-        <p>Land use</p>
-        <ul>
-          <li>
+    </section>
+    <section class="section">
+      <div class="section-header">Geography</div>
+      <div class="section-option">
+          <label>
+            <input type="checkbox" onClick="toggleBySource('hillshade')" checked>
+            <span>Terrain</span>
+          </label>
+          <label>
+            <input type="checkbox" onClick="toggleById('waterway')" checked>
+            <span>Waterways</span>
+            </label>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-header">Land use</div>
+      <div class="section-option">
             <label>
               <input type="checkbox" onClick="toggleById('parks')" checked>
-              <span class="slider">Parks</span>
+              <span>Parks</span>
             </label>
-        </li>
-        <li>
             <label>
               <input type="checkbox" onClick="toggleById('national_park')" checked>
-              <span class="slider">National parks</span>
+              <span>National parks</span>
             </label>
-        </li>
-        <li>
             <label>
               <input type="checkbox" onClick="toggleById('industrial')" checked>
-              <span class="slider">Industrial</span>
+              <span>Industrial</span>
             </label>
-        </li>
-        <li>
             <label>
               <input type="checkbox" onClick="toggleById('school')" checked>
-              <span class="slider">Schools</span>
+              <span>Schools</span>
             </label>
-        </li>
-         <li>
             <label>
               <input type="checkbox" onClick="toggleById('hospital')" checked>
-              <span class="slider">Hospitals</span>
+              <span>Hospitals</span>
             </label>
-        </li>
-        <li>
             <label>
               <input type="checkbox" onClick="toggleById('building')" checked>
-              <span class="slider">Buildings</span>
+              <span>Buildings</span>
             </label>
-        </li>
-        </ul>
       </div>
-      <div class="column">
-        <p>Roads</p>
-        <ul>
-          <li>
-            <label>
+    </section>
+    <section class="section">
+      <div class="section-header">Roads</div>
+      <div class="section-option">
+          <label>
               <input type="checkbox" onClick="toggleById('Motorways')" checked>
-              <span class="slider">Motorways</span>
+              <span>Motorways</span>
             </label>
-          </li>
-          <li>
-            <label>
+          <label>
               <input type="checkbox" onClick="toggleById('primary-road')" checked>
-              <span class="slider">Primary roads</span>
+              <span>Primary roads</span>
             </label>
-          </li>
-          <li>
-            <label>
+          <label>
               <input type="checkbox" onClick="toggleById('secondary-road')" checked>
-              <span class="slider">Secondary roads</span>
+              <span>Secondary roads</span>
             </label>
-          </li>
-          <li>
-            <label>
+          <label>
               <input type="checkbox" onClick="toggleById('streets')" checked>
-              <span class="slider">Streets</span>
+              <span>Streets</span>
             </label>
-          </li>
-          <li>
-            <label>
+          <label>
               <input type="checkbox" onClick="toggleById('rail-roads')" checked>
-              <span class="slider">Rail</span>
+              <span>Rail</span>
             </label>
-          </li>
-        </ul>
       </div>
-      <div class="column">
-        <p>Political</p>
-        <ul>
-           <li>
-            <label>
+    </section>
+    <section class="section">
+      <div class="section-header">Political boundaries</div>
+       <div class="section-option">
+        <label>
               <input type="checkbox" onClick="toggleById('admin-2-boundaries')" checked>
-              <span class="slider">Countries</span>
+              <span>Countries</span>
             </label>
-          </li>
-           <li>
             <label>
               <input type="checkbox" onClick="toggleById('admin-2-boundaries-dispute')" checked>
-              <span class="slider">Disputed boundaries</span>
+              <span>Disputed</span>
             </label>
-          </li>
-          <li>
             <label>
               <input type="checkbox" onClick="toggleById('admin-3-4-boundaries')" checked>
-              <span class="slider">Estates</span>
+              <span>Estates</span>
             </label>
-          </li>
-        </ul>
       </div>
-      <div class="column">
-        <p>Labels</p>
-        <ul>
-          <li>
+    </section>
+    <section class="section">
+      <div class="section-header">Labels</div>
+       <div class="section-option">
             <label>
               <input type="checkbox" onClick="toggleBySource('country_label')" checked>
-              <span class="slider">Country</span>
+              <span>Country</span>
             </label>
-          </li>
-          <li>
             <label>
               <input type="checkbox" onClick="toggleBySource('place_label')" checked>
-              <span class="slider">City</span>
+              <span>City</span>
             </label>
-          </li>
-           <li>
             <label>
               <input type="checkbox" onClick="toggleById('road-label')" checked>
-              <span class="slider">Street</span>
+              <span>Street</span>
             </label>
-          </li>
-        </ul>
       </div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      
-    </div>
-
-
-
-
-    
+    </section>
+    <section class="section">
+      <div class="section-header">Export</div>
+       <div class="section-option">
+            <button class='ui-button' onClick="imgDownload()">Get png</button>
+            <button id="link" class='ui-button' onClick="getgeoInfo()">Get svg</button>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-header">Import map</div>
+       <div class="section-option">
+            <textarea rows="4" cols="50"></textarea>
+      </div>
+    </section>
+  </div>
 </div>
